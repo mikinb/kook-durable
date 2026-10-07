@@ -1,0 +1,19 @@
+# Local development database only. Credentials below are throwaway local values,
+# not secrets; never reuse them outside a developer machine.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kook-durable-postgres
+    environment:
+      POSTGRES_USER: durable
+      POSTGRES_PASSWORD: durable_local_only
+      POSTGRES_DB: durable_demo
+    ports:
+      - "54329:5432"
+    volumes:
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U durable -d durable_demo"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
